@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script src="http://yui.yahooapis.com/3.10.0/build/yui/yui-min.js"></script>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/assets/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>Lecture HUB</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+
+    <!-- Bootstrap core CSS     -->
+    <link href="/static/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.quilljs.com/1.3.2/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.2/quill.bubble.css" rel="stylesheet">
+
+    <!-- Animation library for notifications   -->
+    <link href="/static/assets/css/animate.min.css" rel="stylesheet"/>
+
+    <!--  Paper Dashboard core CSS    -->
+    <link href="/static/assets/css/paper-dashboard.css" rel="stylesheet"/>
+
+    <!--  CSS for Demo Purpose, don't include it in your project     -->
+    <link href="/static/assets/css/demo.css" rel="stylesheet" />
+
+    <!--  Fonts and icons     -->
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+    <link href="/static/assets/css/themify-icons.css" rel="stylesheet">
+
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="sidebar" data-background-color="white" data-active-color="danger">
+
+    <!--
+        Tip 1: you can change the color of the sidebar's background using: data-background-color="white | black"
+        Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+    -->
+
+        <div class="sidebar-wrapper">
+            <div class="logo">
+                Lecture HUB
+            </div>
+
+            <ul class="nav">
+{% if sess_user_type == 0%}
+              <li>
+                  <a href="../notes">
+                      <i class="ti-pencil-alt"></i>
+                      <p>Notes</p>
+                  </a>
+              </li>
+
+              <li>
+                  <a href="../rating">
+                      <i class="ti-star"></i>
+                      <p>Rate Lecture</p>
+                  </a>
+              </li>
+{% endif %}
+              <li>
+                  <a href="../dashboard">
+                      <i class="ti-panel"></i>
+                      <p>Lecture Dashboard</p>
+                  </a>
+              </li>
+              <li class="active">
+                  <a href="../comment_dashboard">
+                      <i class="ti-write"></i>
+                      <p>Comment Feedback</p>
+                  </a>
+              </li>
+              <li>
+                  <a href="../course_dashboard">
+                      <i class="ti-stats-up"></i>
+                      <p>Course Dashboard</p>
+                  </a>
+              </li>
+{% if sess_user_type == 1%}
+              <li>
+                  <a href="../generate_lecture_id">
+                      <i class="ti-export"></i>
+                      <p>Lecture ID Generator</p>
+                  </a>
+              </li>
+{% endif %}
+            </ul>
+        </div>
+    </div>
+
+
+
+    <div class="main-panel">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar bar1"></span>
+                        <span class="icon-bar bar2"></span>
+                        <span class="icon-bar bar3"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Comment Feedback</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <div class="spacer5"></div>
+                            <form class="form-inline"name="navbar_form" id="Navbar_form" method="POST">
+  															{% csrf_token %}
+  															<div class="form-group">
+  																<select class="form-control" id="lec_id_ele" name='lec_id_ele'>
+  																	{% for f in lecs %}
+  																		{% if f.lecture_id == sess_lec_id%}
+  																			<option selected value={{f.lecture_id}}>{{f.lecture_id}} - {{ f.lecture_name }}</option>
+  																		{% else %}
+  																			<option value={{f.lecture_id}}>{{f.lecture_id}} - {{ f.lecture_name }}</option>
+  																		{% endif %}
+  																	{% endfor %}
+  																</select>
+  															<button type="submit" class="btn btn-primary" name="lec_id_ele_submit" value="lec_id_ele_submit">Select</button>
+  															</div>
+  													</form>
+                        </li>
+                        <li>
+                            <a href="../logout">
+                                <i class="ti-power-off"></i>
+                                <p>Logout</p>
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+
+        <div class="content">
+
+        <!-- hide this for successful verification -->
+            <div class="container-fluid">
+                <div class="row">
+                    <h4 style= "text-align:center">Comments</h4>
+                    <div id="accordion" role="tablist" aria-multiselectable="true">
+                      {% if five|length != 0 %}
+                     <div class="card">
+                       <div class="card-header" role="tab" id="headingOne">
+                         <h5 class="mb-0"; style= "text-align:center">
+                           <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="bg-success text-white">
+                             Very Positive Comments
+                           </a>
+                         </h5>
+                       </div>
+                       <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+                         <div class="card-block">
+                           {{five.0}}
+                         </div>
+                         <div class="card-footer"; style= "text-align:center">
+                            <a href="#" data-toggle="modal" data-target="#modalVPMore"> View More</a>
+                        </div>
+                       </div>
+                     </div>
+                     {% endif %}
+                     {% if four|length != 0 %}
+                     <div class="card">
+                       <div class="card-header" role="tab" id="headingTwo">
+                         <h5 class="mb-0"; style= "text-align:center">
+                           <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" class="bg-primary text-white">
+                             Positive
+                           </a>
+                         </h5>
+                       </div>
+                       <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+                         <div class="card-block">
+                           {{four.0}}
+                         </div>
+                         <div class="card-footer"; style= "text-align:center">
+                            <a href="#" data-toggle="modal" data-target="#modalPMore"> View More</a>
+                        </div>
+                       </div>
+                     </div>
+                     {% endif %}
+                     {% if three|length != 0 %}
+                     <div class="card">
+                       <div class="card-header" role="tab" id="headingThree">
+                         <h5 class="mb-0"; style= "text-align:center">
+                           <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" class="bg-info text-white">
+                             Average
+                           </a>
+                         </h5>
+                       </div>
+                       <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+                         <div class="card-block">
+                           {{three.0}}
+                         </div>
+                         <div class="card-footer"; style= "text-align:center">
+                            <a href="#" data-toggle="modal" data-target="#modalAMore"> View More</a>
+                        </div>
+                       </div>
+                     </div>
+                     {% endif %}
+                     {% if two|length != 0 %}
+                     <div class="card">
+                       <div class="card-header" role="tab" id="headingFour">
+                         <h5 class="mb-0"; style= "text-align:center" >
+                           <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" class="bg-warning text-white">
+                             Negative
+                           </a>
+                         </h5>
+                       </div>
+                       <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingFour">
+                         <div class="card-block">
+                           {{two.0}}
+                         </div>
+                         <div class="card-footer"; style= "text-align:center">
+                            <a href="#" data-toggle="modal" data-target="#modalNMore"> View More</a>
+                        </div>
+                       </div>
+                     </div>
+                     {% endif %}
+                     {% if one|length != 0 %}
+                     <div class="card">
+                       <div class="card-header" role="tab" id="headingFive">
+                         <h5 class="mb-0"; style= "text-align:center">
+                           <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive" class="bg-danger text-white">
+                             Critically Negative
+                           </a>
+                         </h5>
+                       </div>
+                       <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingFive">
+                         <div class="card-block">
+                           {{one.0}}
+                         </div>
+                         <div class="card-footer"; style= "text-align:center">
+                            <a href="#" data-toggle="modal" data-target="#modalCNMore"> View More</a>
+                        </div>
+                       </div>
+                     </div>
+                     {% endif %}
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalVPMore" tabindex="-1" role="dialog" aria-labelledby="modalVPMore" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Very Positive Comments</h4>
+                </div>
+                <div class="modal-body">
+                  {% for f in five %}
+                    <p>{{ f }}</p>
+                  {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalPMore" tabindex="-1" role="dialog" aria-labelledby="modalPMore" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Positive Comments</h4>
+                </div>
+                <div class="modal-body">
+                    {% for f in four %}
+                      <p>{{ f }}</p>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAMore" tabindex="-1" role="dialog" aria-labelledby="modalAMore" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Neutral Comments</h4>
+                </div>
+                <div class="modal-body">
+                    {% for f in three %}
+                      <p>{{ f }}</p>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalNMore" tabindex="-1" role="dialog" aria-labelledby="modalNMore" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Negative Comments</h4>
+                </div>
+                <div class="modal-body">
+                    {% for f in two %}
+                      <p>{{ f }}</p>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCNMore" tabindex="-1" role="dialog" aria-labelledby="modalCNMore" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Critically Negative Comments</h4>
+                </div>
+                <div class="modal-body">
+                    {% for f in one %}
+                      <p>{{ f }}</p>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+
+<!--   Core JS Files   -->
+    <script src="/static/assets/js/jquery-1.10.2.js" type="text/javascript"></script>
+    <script src="/static/assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="https://cdn.quilljs.com/1.3.2/quill.min.js"></script>
+    <script src="//cdn.quilljs.com/1.3.2/quill.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    <!--  Checkbox, Radio & Switch Plugins -->
+    <script src="/static/assets/js/bootstrap-checkbox-radio.js"></script>
+
+    <!--  Charts Plugin -->
+    <script src="/static/assets/js/chartist.min.js"></script>
+
+    <!--  Notifications Plugin    -->
+    <script src="/static/assets/js/bootstrap-notify.js"></script>
+
+    <!--  Google Maps Plugin    -->
+
+
+    <!-- Paper Dashboard Core javascript and methods for Demo purpose -->
+    <script src="/static/assets/js/paper-dashboard.js"></script>
+
+    <!-- Paper Dashboard DEMO methods, don't include it in your project! -->
+    <script src="/static/assets/js/demo.js"></script>
+    <script src="/static/assets/js/notes.js"></script>
+</html>

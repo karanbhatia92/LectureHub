@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/apple-icon.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="/static/assets/img/favicon.png">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+	<title>Lecture Dashboard</title>
+
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+
+    <!-- Bootstrap core CSS     -->
+    <link href="/static/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.quilljs.com/1.3.2/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.2/quill.bubble.css" rel="stylesheet">
+
+    <!-- Animation library for notifications   -->
+    <link href="/static/assets/css/animate.min.css" rel="stylesheet"/>
+
+    <!--  Paper Dashboard core CSS    -->
+    <link href="/static/assets/css/paper-dashboard.css" rel="stylesheet"/>
+
+    <!--  CSS for Demo Purpose, don't include it in your project     -->
+    <link href="/static/assets/css/demo.css" rel="stylesheet" />
+
+    <!--  Fonts and icons     -->
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+    <link href="/static/assets/css/themify-icons.css" rel="stylesheet">
+    <script src="//cdn.quilljs.com/1.3.2/quill.js"></script>
+
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="sidebar" data-background-color="white" data-active-color="danger">
+
+    <!--
+        Tip 1: you can change the color of the sidebar's background using: data-background-color="white | black"
+        Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+    -->
+
+        <div class="sidebar-wrapper">
+            <div class="logo">
+                Placeholder
+            </div>
+
+            <ul class="nav">
+
+                <li class="active">
+                    <a href="../notes">
+                        <i class="ti-pencil-alt"></i>
+                        <p>Notes</p>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../rating">
+                        <i class="ti-star"></i>
+                        <p>Rate Lecture</p>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../dashboard">
+                        <i class="ti-panel"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="user.html">
+                        <i class="ti-user"></i>
+                        <p>User Profile</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="table.html">
+                        <i class="ti-view-list-alt"></i>
+                        <p>Table List</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="typography.html">
+                        <i class="ti-text"></i>
+                        <p>Typography</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="icons.html">
+                        <i class="ti-pencil-alt2"></i>
+                        <p>Icons</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="maps.html">
+                        <i class="ti-map"></i>
+                        <p>Maps</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="notifications.html">
+                        <i class="ti-bell"></i>
+                        <p>Notifications</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+
+    <div class="main-panel">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar bar1"></span>
+                        <span class="icon-bar bar2"></span>
+                        <span class="icon-bar bar3"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Notes</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#">
+                                <i class="ti-power-off"></i>
+                                <p>Logout</p>
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+
+        <div class="content">
+
+        <!-- hide this for successful verification -->
+
+            <form id="form_lecID" style= "text-align:center" method="POST">
+							{% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-4 col-lg-offset-4">
+                        <label for="id_lecID" class="form-control-label">Lecture ID :</label>
+                        <div class="spacer5"></div>
+                        <input class="form-control foo" id="id_lecID" name="name_lecID" type="text">
+                    </div>
+                </div>
+                <div class="spacer10"></div>
+                <div class="row">
+                    <button onclick="getquill()" name="lec_check" value="lec" class="btn btn-primary">GO</button>
+                </div>
+                </form>
+
+            <div class="spacer10"></div>
+            <div id="editor">
+            <!--
+                <p>Hello World!</p>
+                <p>Some initial <strong>bold</strong> text</p>
+                <p><br></p>
+            -->
+            </div>
+            <p id="demo"></p>
+            <form id="form_notes" method="POST">
+							{% csrf_token %}
+                <input type='hidden' id= 'id_notes' name='name_notes' value='' />
+                <input type='hidden' id= 'id_lecID2' name='name_lecID2' value='' />
+                <button onclick="submitquill()" name="add_note" value="note"  class="btn btn-primary">Save</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Enter Lecture ID</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="message-text" class="form-control-label">Lecture ID:</label>
+                            <textarea class="form-control" id="message-text"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div> -->
+</div>
+
+<script>
+
+        var quill = new Quill('#editor', { theme: 'snow' });
+        var json_string = "{{json_string}}";
+				console.log(typeof json_string);
+        var r_lec_id = "{{lec_id}}";
+				var k = JSON.parse(json_string);
+				console.log(typeof k);
+				// console.log(k["ops"]);
+        quill.setContents(k);
+
+        document.getElementById('id_lecID').value = r_lec_id;
+        document.getElementById('id_lecID2').value = r_lec_id;
+
+			function submitquill() {
+        var delta = quill.getContents();
+        var quilljson= JSON.stringify(delta);
+        document.getElementById('id_notes').value = quilljson;
+        document.getElementById('form_notes').submit();
+       }
+
+
+     function getquill() {
+        document.getElementById("form_lecID").submit();
+     }
+</script>
+
+</body>
+
+
+<!--   Core JS Files   -->
+    <script src="/static/assets/js/jquery-1.10.2.js" type="text/javascript"></script>
+    <script src="/static/assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="https://cdn.quilljs.com/1.3.2/quill.min.js"></script>
+
+
+    <!--  Checkbox, Radio & Switch Plugins -->
+    <script src="/static/assets/js/bootstrap-checkbox-radio.js"></script>
+
+    <!--  Charts Plugin -->
+    <script src="/static/assets/js/chartist.min.js"></script>
+
+    <!--  Notifications Plugin    -->
+    <script src="/static/assets/js/bootstrap-notify.js"></script>
+
+    <!--  Google Maps Plugin    -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+
+    <!-- Paper Dashboard Core javascript and methods for Demo purpose -->
+    <script src="/static/assets/js/paper-dashboard.js"></script>
+
+    <!-- Paper Dashboard DEMO methods, don't include it in your project! -->
+    <script src="/static/assets/js/demo.js"></script>
+    <!--<script src="/static/assets/js/notes.js"></script>-->
+</html>
